@@ -3,18 +3,20 @@
 <head>
 	<script>
 		// Prevent context menu for right-click (blocks image download)
+// Prevent context menu (right-click)
 document.addEventListener('contextmenu', function (e) {
     e.preventDefault();
 });
 
-// Prevent key combinations for screenshot or dev tools
+// Disable key combinations for screenshots and developer tools
 document.addEventListener('keydown', function (e) {
-    // Disable PrintScreen (PrtScn) and other common shortcuts
-    if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 's') || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'p')) {
-        alert('Action disabled to prevent screenshots or saving.');
+    if (e.key === 'PrintScreen' || 
+        (e.ctrlKey && e.key === 's') || 
+        (e.ctrlKey && e.key === 'u') || 
+        (e.ctrlKey && e.key === 'p')) {
+        alert('This action is disabled.');
         e.preventDefault();
     }
-    // Block F12 and Ctrl+Shift+I for dev tools
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
         alert('Developer tools are disabled.');
         e.preventDefault();
@@ -35,41 +37,57 @@ document.addEventListener('paste', function (e) {
     e.preventDefault();
 });
 
+// Add dynamic watermark to discourage screenshots
+function addDynamicWatermark(text) {
+    const watermark = document.createElement('div');
+    watermark.innerText = text;
+    watermark.style.position = 'fixed';
+    watermark.style.top = '0';
+    watermark.style.left = '0';
+    watermark.style.width = '100%';
+    watermark.style.height = '100%';
+    watermark.style.zIndex = '9999';
+    watermark.style.pointerEvents = 'none';
+    watermark.style.opacity = '0.2';
+    watermark.style.fontSize = '30px';
+    watermark.style.fontWeight = 'bold';
+    watermark.style.color = 'rgba(255, 255, 255, 0.5)';
+    watermark.style.textAlign = 'center';
+    watermark.style.lineHeight = '100vh';
+    document.body.appendChild(watermark);
+}
+addDynamicWatermark('Confidential - YOUNUS');
+
+// Detect when the user switches tabs or minimizes the window
+document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') {
+        alert('Screen recording or tab switching is not allowed.');
+        document.body.innerHTML = ''; // Clear content
+    }
+});
+
 // Attempt to block screen recording
 setInterval(() => {
-    const hidden = window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200;
+    const hidden = window.outerWidth - window.innerWidth > 200 || 
+                   window.outerHeight - window.innerHeight > 200;
     if (hidden) {
-        alert('Screen recording or resizing detected and blocked!');
+        alert('Screen recording detected and blocked!');
         document.body.innerHTML = '';
     }
 }, 1000);
 
-// Prevent sharing via navigator API
-if (navigator.share) {
-    navigator.share = function () {
-        alert('Sharing is disabled.');
-    };
-}
-
-// Watermark on images to discourage screenshotting
-window.onload = function () {
-    const images = document.querySelectorAll('img');
-    images.forEach((img) => {
-        img.style.position = 'relative';
-        img.style.zIndex = '10';
-        const watermark = document.createElement('div');
-        watermark.style.position = 'absolute';
-        watermark.style.zIndex = '20';
-        watermark.style.top = '50%';
-        watermark.style.left = '50%';
-        watermark.style.transform = 'translate(-50%, -50%)';
-        watermark.style.color = 'rgba(255,255,255,0.5)';
-        watermark.style.fontSize = '20px';
-        watermark.style.fontWeight = 'bold';
-        watermark.innerText = 'YOUNUS';
-        img.parentElement.appendChild(watermark);
-    });
-};
+// Blur content temporarily on PrintScreen
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'PrintScreen') {
+        alert('Screenshots are disabled!');
+        document.body.style.filter = 'blur(10px)';
+        setTimeout(() => {
+            document.body.style.filter = 'none';
+        }, 2000);
+        e.preventDefault();
+    }
+});
+		
 
 	</script>
 	<style>
