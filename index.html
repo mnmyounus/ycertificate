@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Redirect | Processing Your Request</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-color: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .redirect-container {
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .loader {
+            margin: 25px auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: #e8f4fc;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .security-badge i {
+            color: var(--primary-color);
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .details-container {
+            margin-top: 25px;
+            text-align: left;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        .details-container h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        .details-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .details-label {
+            font-weight: bold;
+            min-width: 120px;
+        }
+
+        .timer {
+            margin-top: 20px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 480px) {
+            .redirect-container {
+                padding: 20px;
+            }
+            
+            .details-row {
+                flex-direction: column;
+            }
+            
+            .details-label {
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="logo">
+            <img src="https://via.placeholder.com/150x50?text=Your+Logo" alt="Company Logo">
+        </div>
+        
+        <h1>Secure Redirect in Progress</h1>
+        <p>Please wait while we securely process your request and verify your details.</p>
+        
+        <div class="loader"></div>
+        
+        <div class="timer">Redirecting in <span id="countdown">5</span> seconds...</div>
+        
+        <div class="security-badge">
+            <i class="fas fa-lock"></i>
+            <span>Secure Connection Encrypted</span>
+        </div>
+        
+        <div class="details-container">
+            <h3>Connection Details</h3>
+            <div class="details-row">
+                <span class="details-label">Your IP:</span>
+                <span id="ip-address">Loading...</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Device Type:</span>
+                <span id="device-type">Loading...</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Browser:</span>
+                <span id="browser-info">Loading...</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">OS:</span>
+                <span id="os-info">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to detect device type
+        function getDeviceType() {
+            const ua = navigator.userAgent;
+            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+                return "Tablet";
+            }
+            if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+                return "Mobile";
+            }
+            return "Desktop";
+        }
+
+        // Function to detect browser
+        function getBrowser() {
+            const ua = navigator.userAgent;
+            let browser = "Unknown";
+            
+            if (ua.includes("Firefox")) {
+                browser = "Firefox";
+            } else if (ua.includes("SamsungBrowser")) {
+                browser = "Samsung Browser";
+            } else if (ua.includes("Opera") || ua.includes("OPR")) {
+                browser = "Opera";
+            } else if (ua.includes("Trident")) {
+                browser = "Internet Explorer";
+            } else if (ua.includes("Edge")) {
+                browser = "Edge";
+            } else if (ua.includes("Chrome")) {
+                browser = "Chrome";
+            } else if (ua.includes("Safari")) {
+                browser = "Safari";
+            }
+            
+            return browser;
+        }
+
+        // Function to detect OS
+        function getOS() {
+            const ua = navigator.userAgent;
+            let os = "Unknown";
+            
+            if (ua.includes("Windows")) {
+                os = "Windows";
+            } else if (ua.includes("Mac")) {
+                os = "MacOS";
+            } else if (ua.includes("Linux")) {
+                os = "Linux";
+            } else if (ua.includes("Android")) {
+                os = "Android";
+            } else if (ua.includes("iOS") || /iPhone|iPad|iPod/.test(ua)) {
+                os = "iOS";
+            }
+            
+            return os;
+        }
+
+        // Function to get screen resolution
+        function getScreenResolution() {
+            return `${window.screen.width}x${window.screen.height}`;
+        }
+
+        // Function to collect all data
+        function collectVisitorData(ip) {
+            return {
+                ip: ip,
+                deviceType: getDeviceType(),
+                browser: getBrowser(),
+                os: getOS(),
+                screenResolution: getScreenResolution(),
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timestamp: new Date().toISOString(),
+                referrer: document.referrer || "Direct",
+                cookiesEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack === "1" || navigator.doNotTrack === "yes"
+            };
+        }
+
+        // Function to start countdown
+        function startCountdown() {
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = "https://mnmyounus.github.io/skills";
+                }
+            }, 1000);
+        }
+
+        // Get IP address and update UI
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                const ip = data.ip;
+                document.getElementById('ip-address').textContent = ip;
+                document.getElementById('device-type').textContent = getDeviceType();
+                document.getElementById('browser-info').textContent = getBrowser();
+                document.getElementById('os-info').textContent = getOS();
+                
+                // Collect data
+                const visitorData = collectVisitorData(ip);
+                
+                // Send data to PHP endpoint on InfinityFree
+                fetch('https://redirect.yskills.ct.ws/redirect.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(visitorData),
+                    mode: 'no-cors' // Important for cross-origin requests
+                });
+                
+                // Start countdown
+                startCountdown();
+            })
+            .catch(error => {
+                console.error('Error fetching IP:', error);
+                document.getElementById('ip-address').textContent = "Not available";
+                startCountdown();
+            });
+    </script>
+</body>
+</html>
